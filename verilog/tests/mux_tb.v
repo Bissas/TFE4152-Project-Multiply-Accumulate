@@ -1,4 +1,4 @@
-`include "./mux.v"
+`include "../modules/mux.v"
 module mux_tb;
     reg a = 0;
     reg b = 0;
