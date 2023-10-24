@@ -13,7 +13,7 @@ module d_flip_flop_tb;
     d_flip_flop d1(A,clk,clk_bar,Q,Q_bar);
 
     initial begin
-        $dumpfile("../simulations/d_flip_flop_sim");
+        $dumpfile("../simulations/d_flip_flop_sim.vcd");
         $dumpvars;
         wait(clk);
         wait(~clk);
