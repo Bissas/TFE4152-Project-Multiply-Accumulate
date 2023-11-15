@@ -5,3 +5,5 @@ module mux (A,B,S,Y);
     cmos(Y, A, S, ~S);
     cmos(Y, B, ~S, S);
 endmodule;
+
+

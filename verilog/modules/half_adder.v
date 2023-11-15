@@ -10,6 +10,4 @@ module half_adder(A,B,S,C);
 
     and(C, A, B);
 endmodule;
-
-
 `endif
