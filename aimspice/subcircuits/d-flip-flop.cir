@@ -1,0 +1,14 @@
+[aimspice]
+[description]
+251
+* d-flip-flop subcircuit
+
+.subckt D-FLIP-FLOP IN OUT CLK INV_CLK VDD VSS
+	* not gates
+	xNOT1 IN 1 VDD VSS NOT
+	xNOT2 3 OUT VDD VSS NOT
+	* d-latches
+	xDL1 1 2 INV_CLK CLK VDD VSS D-LATCH
+	xDL2 2 3 CLK INV_CLK VDD VSS D-LATCH 
+.ends D-FLIP-FLOP
+[end]

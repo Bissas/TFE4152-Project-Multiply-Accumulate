@@ -1,0 +1,63 @@
+[aimspice]
+[description]
+1174
+* gate subcircuits
+
+* not gate
+.subckt NOT A OUT VDD VSS
+	* pmos transistors
+	xQ1 OUT A VDD VDD pmos1v l=lenght w=width
+	* nmos transistors
+	xQ2 OUT A VSS VSS nmos1v l=lenght w=width
+.ends NOT	
+
+* nand gate
+.subckt NAND A B OUT VDD VSS
+	* pmos transistors
+	xQ1 OUT A VDD VDD pmos1v l=lenght w=width
+	xQ2 OUT B VDD VDD pmos1v l=lenght w=width	
+	* nmos transistors
+	xQ3 OUT A 1 1 nmos1v l=lenght w=width
+	xQ4 1 B VSS VSS nmos1v l=lenght w=width
+.ends NAND
+
+* and gate
+.subckt AND A B OUT VDD VSS
+	xNAND A B 1 VDD VSS NAND
+	xNOT 1 OUT VDD VSS NOT
+.ends AND
+
+* nor gate
+.subckt NOR A B OUT VDD VSS 
+	* pmos transistors
+	xQ1 1 A VDD VDD pmos1v l=lenght w=width
+	xQ2 OUT B 1 1 pmos1v l=lenght w=width
+	* nmos transistors
+	xQ3 OUT A VSS VSS nmos1v l=lenght w=width
+	xQ4 OUT B VSS VSS nmos1v l=lenght w=width
+.ends NOR
+
+* or gate
+.subckt OR A B OUT VDD VSS 
+	xNOR A B 1 VDD VSS NOR
+	xNOT 1 OUT VDD VSS NOT
+.ends OR
+
+* transmission gate
+.subckt TRANSMISSION IN OUT EN INV_EN VDD VSS
+	* pmos transistors
+	xQ1 OUT INV_EN IN VDD pmos1v l=lenght w=width
+	* nmos transistors
+	xQ2 IN EN OUT VSS nmos1v l=lenght w=width
+.ends TRANSMISSION
+
+
+[tran]
+1
+25
+X
+X
+0
+[ana]
+4 0
+[end]

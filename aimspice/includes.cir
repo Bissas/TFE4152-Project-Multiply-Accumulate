@@ -1,0 +1,25 @@
+[aimspice]
+[description]
+892
+* includes models and subcircuits
+
+* includes 90nm CMOS transistor model (you can change the transistor corner by changing the file name to ff, sf, fs or ss instead of tt)
+.include C:\Users\tord_\Documents\code_projects\dic_project\aimspice\models\gpdk90nm_tt.cir
+
+* includes gate subcircuits
+.include C:\Users\tord_\Documents\code_projects\dic_project\aimspice\subcircuits\gates.cir
+
+* includes mux subcircuit
+.include C:\Users\tord_\Documents\code_projects\dic_project\aimspice\subcircuits\mux.cir
+
+* includes d-latch subcircuit
+.include C:\Users\tord_\Documents\code_projects\dic_project\aimspice\subcircuits\d-latch.cir
+
+* includes d-flip-flop subcircuit
+.include C:\Users\tord_\Documents\code_projects\dic_project\aimspice\subcircuits\d-flip-flop.cir
+
+* includes register
+.include C:\Users\tord_\Documents\code_projects\dic_project\aimspice\subcircuits\register.cir
+
+
+[end]
