@@ -1,0 +1,17 @@
+[aimspice]
+[description]
+336
+* 1-bit register
+
+.subckt REGISTER IN OUT EN RST CLK VDD VSS
+	* multiplexer
+	xMUX OUT IN EN 1 VDD VSS MUX
+	* not gate to create INV_CLK and INV_RST
+	xNOT1 CLK INV_CLK VDD VSS NOT
+	xNOT2 RST INV_RST VDD VSS NOT
+	*and gate
+	xAND INV_RST 1 2 VDD VSS AND
+	* d-flip-flop
+	xDFF 2 OUT CLK INV_CLK VDD VSS D-FLIP-FLOP
+.ends REGISTER
+[end]

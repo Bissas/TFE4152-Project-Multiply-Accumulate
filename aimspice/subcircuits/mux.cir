@@ -1,0 +1,25 @@
+[aimspice]
+[description]
+227
+* multiplexer (mux) subcircuit
+
+.subckt MUX A B S OUT VDD VSS
+	* not gate
+	xNOT S INV_S VDD VSS NOT
+	* transmission gates
+	xT1 A OUT INV_S S VDD VSS TRANSMISSION
+	xT2 B OUT S INV_S VDD VSS TRANSMISSION
+.ends MUX
+
+
+
+
+[tran]
+1
+25
+X
+X
+0
+[ana]
+4 0
+[end]

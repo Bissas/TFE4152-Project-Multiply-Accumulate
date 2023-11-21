@@ -1,0 +1,159 @@
+[aimspice]
+[description]
+3429
+* main aimspice circuit file
+
+* transistor gate dimension parameters
+.param lenght = 300n
+.param width = 150n
+
+* for some reason including the models and subcircuits from includes.cir will not work properly
+* .include includes.cir
+
+* includes 90nm cmos transistor models (to change corner, change "tt" in the file name to "ff", "fs", "sf" or "ss")
+.include C:\Users\tord_\Documents\code_projects\dic_project\aimspice\models\gpdk90nm_ss.cir
+
+* not gate
+.subckt NOT A OUT VDD VSS
+	* pmos transistors
+	xQ1 OUT A VDD VDD pmos1v l=lenght w=width
+	* nmos transistors
+	xQ2 OUT A VSS VSS nmos1v l=lenght w=width
+.ends NOT	
+
+* nand gate
+.subckt NAND A B OUT VDD VSS
+	* pmos transistors
+	xQ1 OUT A VDD VDD pmos1v l=lenght w=width
+	xQ2 OUT B VDD VDD pmos1v l=lenght w=width	
+	* nmos transistors
+	xQ3 OUT A 1 1 nmos1v l=lenght w=width
+	xQ4 1 B VSS VSS nmos1v l=lenght w=width
+.ends NAND
+
+* and gate
+.subckt AND A B OUT VDD VSS
+	xNAND A B 1 VDD VSS NAND
+	xNOT 1 OUT VDD VSS NOT
+.ends AND
+
+* nor gate
+.subckt NOR A B OUT VDD VSS 
+	* pmos transistors
+	xQ1 1 A VDD VDD pmos1v l=lenght w=width
+	xQ2 OUT B 1 1 pmos1v l=lenght w=width
+	* nmos transistors
+	xQ3 OUT A VSS VSS nmos1v l=lenght w=width
+	xQ4 OUT B VSS VSS nmos1v l=lenght w=width
+.ends NOR
+
+* or gate
+.subckt OR A B OUT VDD VSS 
+	xNOR A B 1 VDD VSS NOR
+	xNOT 1 OUT VDD VSS NOT
+.ends OR
+
+* transmission gate
+.subckt TRANSMISSION IN OUT EN INV_EN VDD VSS
+	* pmos transistors
+	xQ1 OUT INV_EN IN VDD pmos1v l=lenght w=width
+	* nmos transistors
+	xQ2 IN EN OUT VSS nmos1v l=lenght w=width
+.ends TRANSMISSION
+
+* multiplexer
+.subckt MUX A B S OUT VDD GND
+	* not gate
+	xNOT S 1 VDD GND NOT
+	* transmission gates
+	xT1 A OUT 1 S VDD VSS TRANSMISSION
+	xT2 B OUT S 1 VDD VSS TRANSMISSION
+.ends MUX
+
+* d-latch
+.subckt D-LATCH IN OUT CLK INV_CLK VDD VSS
+	* not gates	
+	xNOT1 1 OUT VDD VSS NOT
+	xNOT2 OUT 2 VDD VSS NOT
+	* transmission gates
+	xT1 IN 1 CLK INV_CLK VDD VSS TRANSMISSION
+	xT2 2 1 INV_CLK CLK VDD VSS TRANSMISSION
+.ends D-LATCH
+
+* d-flip-flop
+.subckt D-FLIP-FLOP IN OUT CLK INV_CLK VDD VSS
+	* not gates
+	xNOT1 IN 1 VDD VSS NOT
+	xNOT2 3 OUT VDD VSS NOT
+	* d-latches
+	xDL1 1 2 INV_CLK CLK VDD VSS D-LATCH
+	xDL2 2 3 CLK INV_CLK VDD VSS D-LATCH 
+.ends D-FLIP-FLOP
+
+* one bit register
+.subckt REGISTER IN OUT EN INV_RST CLK INV_CLK VDD VSS
+	* multiplexer
+	xMUX OUT IN EN 1 VDD VSS MUX
+	*and gate
+	xAND INV_RST 1 2 VDD VSS AND
+	* d-flip-flop
+	xDFF 2 OUT CLK INV_CLK VDD VSS D-FLIP-FLOP
+.ends REGISTER
+
+* voltage parameters
+.param volt = 0.82
+
+* generates voltages
+V_SUPPLY VDD 0 dc volt
+
+* used to plot the registers timing diagram
+V_CLOCK CLK 0 PULSE(0 volt 0n 0.1n 0.1n 5n 10n)
+V_SIGNAL SIG 0 PULSE(0 volt 7n 0.1n 0.1n 18n 30n)
+V_ENABLE EN 0 PULSE(0 volt 0n 0.1n 0.1n 66n 80n)
+V_RESET RST 0 PULSE(0 volt 20n 0.1n 0.1n 30n 105n)
+
+* not gates to create INV_CLK and INV_RST
+xNOT1 CLK INV_CLK VDD 0 NOT
+xNOT2 RST INV_RST VDD 0 NOT
+
+* 1 bit register
+xREGISTER SIG OUT EN INV_RST CLK INV_CLK VDD 0 REGISTER
+
+* plots
+.plot v(SIG)
+.plot v(CLK)
+.plot v(EN)
+.plot v(RST)
+.plot v(OUT)
+
+* used to plot the registers static power consumption
+* V_CLOCK CLK 0 PULSE(volt volt 0n 0.1n 0.1n 5n 10n)
+* V_SIGNAL SIG 0 PULSE(volt volt 7n 0.1n 0.1n 20n 30n)
+* V_ENABLE EN 0 PULSE(volt volt 0n 0.1n 0.1n 66n 80n)
+* V_RESET RST 0 PULSE(volt volt 20n 0.1n 0.1n 30n 100n)
+
+* .plot i(VDD)
+
+[options]
+2
+Gmin 1e-39
+Temp 70
+[dc]
+1
+V_SIGNAL
+0
+1
+0.001
+[dctemp]
+0
+70
+1
+[tran]
+0.01n
+500n
+X
+X
+0
+[ana]
+4 0
+[end]

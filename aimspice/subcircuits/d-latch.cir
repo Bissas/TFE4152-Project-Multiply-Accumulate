@@ -1,0 +1,14 @@
+[aimspice]
+[description]
+272
+* positive edge d-latch subcircuit
+
+.subckt D-LATCH IN OUT CLK INV_CLK VDD VSS
+	* not gates	
+	xNOT1 1 OUT VDD VSS NOT
+	xNOT2 OUT 2 VDD VSS NOT
+	* transmission gates
+	xT1 IN 1 CLK INV_CLK VDD VSS TRANSMISSION
+	xT2 2 1 INV_CLK CLK VDD VSS TRANSMISSION
+.ends D-LATCH
+[end]
